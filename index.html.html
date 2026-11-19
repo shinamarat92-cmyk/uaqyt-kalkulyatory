@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Бос уақытты бөлу калькуляторы</title>
+<style>
+:root{--navy:#17324d;--teal:#0f7c7a;--orange:#e07a2e;--k4:#c8453b;--k3:#2e8b57;--k2:#d9a21b;--k1:#8a96a3;--rest:#7cc4c1;--bg:#eef2f6;--ink:#1d2733;--mute:#5b6b7b;--line:#d6dee6}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Inter,Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.4}
+header{background:linear-gradient(120deg,#17324d,#1f4f6e 60%,#0f7c7a);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+header h1{margin:0;font-size:26px;font-weight:800}
+header p{margin:4px 0 0;color:#cfe6e5;font-size:15px}
+header .formula{font-family:Georgia,"Times New Roman",serif;font-size:22px;background:rgba(255,255,255,.12);padding:8px 16px;border-radius:10px;white-space:nowrap}
+main{display:grid;grid-template-columns:minmax(430px,1fr) minmax(520px,1.25fr);gap:20px;padding:20px 24px;max-width:1700px;margin:0 auto}
+@media(max-width:1100px){main{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:14px;border:1px solid var(--line);padding:18px 20px;margin-bottom:20px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+h2{margin:0 0 12px;font-size:19px;color:var(--navy);display:flex;align-items:center;gap:10px}
+h2 .n{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:none}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid3b{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+label.f{display:flex;flex-direction:column;font-size:13px;color:var(--mute);gap:4px}
+input[type=number],input[type=text],input[type=time],select{font:inherit;font-size:16px;padding:7px 9px;border:1px solid #c3ced8;border-radius:8px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus{outline:2px solid var(--teal);outline-offset:0}
+.tbig{margin-top:14px;padding:12px 14px;background:#f4f8fb;border-radius:10px;display:flex;justify-content:space-between;align-items:center;font-size:15px}
+.tbig b{font-size:24px;color:var(--navy)}
+table{width:100%;border-collapse:collapse}
+th{font-size:12.5px;color:var(--mute);font-weight:600;text-align:left;padding:6px 5px;border-bottom:1px solid var(--line)}
+td{padding:5px;border-bottom:1px solid #edf1f5;vertical-align:middle}
+td.c,th.c{text-align:center}
+.tasks input[type=text]{min-width:140px}
+.tasks input[type=number]{width:66px}
+.tasks select{width:178px;min-width:0}
+.tasks td:nth-child(2){width:178px}
+.tasks td:first-child{width:100%}
+.tasks input[type=text]{width:100%}
+.del{border:none;background:none;color:#a33;font-size:20px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.del:hover{background:#fbe9e7}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button.b{font:inherit;font-size:15px;padding:9px 16px;border-radius:9px;border:1px solid #c3ced8;background:#fff;cursor:pointer;color:var(--ink)}
+button.b:hover{background:#f2f6f9}
+button.p{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700}
+button.p:hover{background:#0c6967}
+button.o{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:700}
+.kdot{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--mute);margin-top:8px}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chk{border-radius:10px;padding:10px 12px;border:1px solid var(--line);font-size:14px}
+.chk .t{font-family:Georgia,"Times New Roman",serif;font-size:17px;color:var(--navy)}
+.chk .v{margin-top:3px;color:var(--mute)}
+.chk.ok{background:#eaf6ef;border-color:#a9d8bc}.chk.ok .s{color:#1f7a45}
+.chk.bad{background:#fdecea;border-color:#f0b4ad}.chk.bad .s{color:#b2372d}
+.chk .s{font-weight:800;float:right;font-size:15px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#f4f8fb;border-radius:10px;padding:12px;text-align:center}
+.kpi .v{font-size:28px;font-weight:800;color:var(--navy);line-height:1.1}
+.kpi .l{font-size:12.5px;color:var(--mute);margin-top:4px}
+.kpi.g .v{color:var(--teal)}.kpi.o .v{color:var(--orange)}
+.bar{display:flex;height:34px;border-radius:8px;overflow:hidden;background:#e9eef3}
+.bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden}
+.cmp-row{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;margin:10px 0}
+.cmp-row .nm{font-weight:700;font-size:14px}
+.cmp-row .nm small{display:block;font-weight:400;color:var(--mute);font-size:12.5px}
+.ctable td,.ctable th{font-size:14px;padding:7px 6px}
+.better{color:#1f7a45;font-weight:800}.worse{color:#b2372d;font-weight:800}
+.status{font-size:12.5px;font-weight:700;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.st-full{background:#e3f4ea;color:#1f7a45}.st-part{background:#fff3dc;color:#9a6a00}.st-none{background:#fdecea;color:#b2372d}
+.sched{position:relative}
+.slot{display:grid;grid-template-columns:118px 1fr 70px;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;margin-bottom:5px;font-size:15px}
+.slot .tm{font-variant-numeric:tabular-nums;font-weight:700;color:var(--navy)}
+.slot .du{text-align:right;color:var(--mute);font-size:13.5px}
+.slot.buf{padding:2px 10px;margin-bottom:5px;font-size:12.5px;color:var(--mute);background:transparent;grid-template-columns:118px 1fr 70px}
+.note{font-size:13.5px;color:var(--mute);margin-top:8px}
+.warn{background:#fff4ea;border:1px solid #f2c9a5;border-radius:10px;padding:10px 12px;font-size:14px;margin-top:10px}
+.hidden{display:none}
+.step-tag{font-size:12px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.06em}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:0 0 24px}
+.adapt input[type=number]{width:80px}
+.pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12.5px;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Бос уақытты бөлудің математикалық алгоритмі</h1>
+    <p>Эйзенхауэр матрицасы + сызықтық жоспарлау + шектеулер жүйесі · 5 қадамдық калькулятор</p>
+  </div>
+  <div class="formula">F = Σ k<sub>i</sub>·t<sub>i</sub> → max</div>
+</header>
+
+<main>
+<section>
+  <div class="card">
+    <div class="step-tag">1-қадам</div>
+    <h2><span class="n">1</span>Ресурсты анықтау: T<sub>бос</sub></h2>
+    <div class="grid3">
+      <label class="f">Ұйқы (мин)<input type="number" id="sleep" min="0" max="1440" step="10"></label>
+      <label class="f">Мектеп + жол (мин)<input type="number" id="school" min="0" max="1440" step="10"></label>
+      <label class="f">Тамақ, гигиена (мин)<input type="number" id="meals" min="0" max="1440" step="10"></label>
+    </div>
+    <div class="tbig"><span>T<sub>бос</sub> = 1440 − ұйқы − мектеп − тамақ</span><b id="tfree">—</b></div>
+    <div class="grid3b">
+      <label class="f">Бос уақыттың басталуы<input type="time" id="start"></label>
+      <label class="f">Оқу минимумы, t<sub>min</sub> (мин)<input type="number" id="tmin" min="0" step="10"></label>
+      <label class="f">Істер арасындағы буфер (мин)<input type="number" id="buf" min="0" max="30" step="5"></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step-tag">1-қадам (жалғасы)</div>
+    <h2><span class="n">1</span>Істер тізімі және басымдық коэффициенті</h2>
+    <table class="tasks">
+      <thead><tr><th>Іс-әрекет</th><th>Квадрант (k)</th><th class="c">Мин</th><th class="c" title="Күрделі тапсырма: уақыты ×1,5">Күрделі<br>×1,5</th><th class="c" title="Үй тапсырмасы, оқу">Оқу</th><th></th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="btns">
+      <button class="b" id="add">+ Іс қосу</button>
+      <button class="b" id="example">Мысалды жүктеу</button>
+      <button class="b" id="clear">Тазалау</button>
+    </div>
+    <div class="legend">
+      <span><i class="kdot" style="background:var(--k4)"></i>k = 4 маңызды әрі шұғыл</span>
+      <span><i class="kdot" style="background:var(--k3)"></i>k = 3 маңызды, шұғыл емес</span>
+      <span><i class="kdot" style="background:var(--k2)"></i>k = 2 шұғыл, маңызды емес</span>
+      <span><i class="kdot" style="background:var(--k1)"></i>k = 1 «хронофаг» (цифрлық шу)</span>
+    </div>
+    <p class="note">Тізімді оқушы әдетте қалай істейтін болса, сол ретпен жазыңыз — калькулятор осы ретті «әдеттегі тәртіп» ретінде алгоритммен салыстырады.</p>
+  </div>
+
+  <div class="card">
+    <div class="step-tag">5-қадам</div>
+    <h2><span class="n">5</span>Өзін-өзі бақылау (күн соңында)</h2>
+    <p class="note" style="margin-top:0">Әр іске нақты қанша минут кеткенін жазыңыз. Алгоритм ауытқуды есептеп, келесі күнге уақытты түзетеді.</p>
+    <table class="adapt"><thead><tr><th>Іс-әрекет</th><th class="c">Жоспар</th><th class="c">Нақты</th><th class="c">Ауытқу</th><th>Келесі күнге</th></tr></thead><tbody id="abody"></tbody></table>
+    <div class="btns"><button class="b o" id="applyAdapt">Келесі күнге түзетуді қолдану</button></div>
+  </div>
+</section>
+
+<section>
+  <div class="card">
+    <div class="step-tag">2-қадам</div>
+    <h2><span class="n">2</span>Шектеулер жүйесі</h2>
+    <div class="checks" id="checks"></div>
+  </div>
+
+  <div class="card">
+    <div class="step-tag">3–4-қадам</div>
+    <h2><span class="n">3</span>Нәтиже: әдеттегі тәртіп пен алгоритмді салыстыру</h2>
+    <div class="kpis" id="kpis"></div>
+    <div id="bars"></div>
+    <div class="legend">
+      <span><i class="kdot" style="background:var(--k4)"></i>k = 4</span><span><i class="kdot" style="background:var(--k3)"></i>k = 3</span>
+      <span><i class="kdot" style="background:var(--k2)"></i>k = 2</span><span><i class="kdot" style="background:var(--k1)"></i>k = 1</span>
+      <span><i class="kdot" style="background:var(--rest)"></i>демалыс және буфер</span>
+    </div>
+    <table class="ctable" style="margin-top:14px" id="ctable"></table>
+    <div id="warns"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>Уақытты бөлу нәтижесі</h2>
+    <table id="alloc" class="ctable"></table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">✓</span>Дайын күн кестесі</h2>
+    <div class="sched" id="sched"></div>
+    <p class="note">Ең көп ой еңбегін қажет ететін істер (k = 4) мидың сергек кезіне — басына қойылады. Істер арасына буферлік үзіліс енгізілген.</p>
+  </div>
+</section>
+</main>
+<footer>Ғылыми жоба · «Оқушылардың бос уақытын тиімді бөлудің математикалық алгоритмі» · интернетсіз жұмыс істейді</footer>
+
+<script>
+const Q = {4:"Маңызды әрі шұғыл",3:"Маңызды, шұғыл емес",2:"Шұғыл, маңызды емес",1:"Хронофаг (цифрлық шу)"};
+const QS = {4:"ең маңызды",3:"маңызды",2:"шұғыл",1:"хронофаг"};
+const COL = {4:"var(--k4)",3:"var(--k3)",2:"var(--k2)",1:"var(--k1)",0:"var(--rest)"};
+const EXAMPLE = {
+  sleep:540, school:390, meals:90, start:"15:00", tmin:120, buf:10,
+  tasks:[
+    {name:"Әлеуметтік желі (TikTok, Instagram)", k:1, min:120, cx:false, st:false},
+    {name:"Достармен чатта сөйлесу", k:2, min:30, cx:false, st:false},
+    {name:"Алгебра үй тапсырмасы", k:4, min:60, cx:true, st:true},
+    {name:"Ағылшын тілі: ертеңгі БЖБ-ға дайындық", k:4, min:40, cx:false, st:true},
+    {name:"Компьютерлік ойын", k:1, min:60, cx:false, st:false},
+    {name:"Спорт жаттығуы", k:3, min:60, cx:false, st:false},
+    {name:"Үйге көмектесу", k:2, min:20, cx:false, st:false},
+    {name:"Кітап оқу", k:3, min:30, cx:false, st:false},
+    {name:"Ғылыми жобамен жұмыс", k:3, min:45, cx:false, st:false}
+  ]
+};
+let S;
+function load(){ try{ const s=localStorage.getItem("bos-uakyt-v1"); if(s){S=JSON.parse(s); return;} }catch(e){} S=JSON.parse(JSON.stringify(EXAMPLE)); }
+function save(){ try{ localStorage.setItem("bos-uakyt-v1", JSON.stringify(S)); }catch(e){} }
+const $=id=>document.getElementById(id);
+const num=(v,d=0)=>{const n=Number(v);return Number.isFinite(n)?n:d};
+const fmt=m=>{m=Math.round(m); if(m<60) return m+" мин"; const h=Math.floor(m/60), r=m%60; return h+" сағ"+(r?" "+r+" мин":"");};
+const clock=(base,add)=>{let t=(base+add)%1440; if(t<0)t+=1440; return String(Math.floor(t/60)).padStart(2,"0")+":"+String(Math.round(t%60)).padStart(2,"0");};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderInputs(){
+  ["sleep","school","meals","tmin","buf"].forEach(k=>$(k).value=S[k]);
+  $("start").value=S.start;
+  const tb=$("tbody"); tb.innerHTML="";
+  S.tasks.forEach((t,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><input type="text" value="${esc(t.name)}" data-i="${i}" data-f="name"></td>
+      <td><select data-i="${i}" data-f="k">${[4,3,2,1].map(k=>`<option value="${k}" ${t.k==k?"selected":""}>k = ${k} · ${QS[k]}</option>`).join("")}</select></td>
+      <td class="c"><input type="number" min="5" max="600" step="5" value="${t.min}" data-i="${i}" data-f="min"></td>
+      <td class="c"><input type="checkbox" ${t.cx?"checked":""} data-i="${i}" data-f="cx"></td>
+      <td class="c"><input type="checkbox" ${t.st?"checked":""} data-i="${i}" data-f="st"></td>
+      <td><button class="del" data-del="${i}" title="Өшіру">×</button></td>`;
+    tr.querySelector("select").style.borderLeft="6px solid "+COL[t.k];
+    tb.appendChild(tr);
+  });
+}
+
+/* ===== АЛГОРИТМ ===== */
+function algorithm(){
+  const T=Math.max(0,1440-num(S.sleep)-num(S.school)-num(S.meals));
+  const restMin=0.2*T, noiseCap=0.15*T, buf=Math.max(0,num(S.buf));
+  const tasks=S.tasks.map((t,i)=>({...t,i,k:num(t.k,1),need:Math.round(Math.max(0,num(t.min))*(t.cx?1.5:1))})).filter(t=>t.need>0);
+  const order=[...tasks].sort((a,b)=>b.k-a.k||a.i-b.i);       // 3-қадам: k бойынша кему ретімен (greedy)
+  let rest=restMin, res;
+  for(let iter=0;iter<10;iter++){
+    let remaining=T-rest, noise=0; const give={};
+    for(const t of order){
+      let g=Math.min(t.need,remaining);
+      if(t.k===1) g=Math.min(g,noiseCap-noise);
+      g=Math.floor(Math.max(0,g));
+      if(g<10 && g<t.need) g=0;                                  // 10 минуттан аз «қиқым» уақыт берілмейді
+      give[t.i]=g; remaining-=g; if(t.k===1) noise+=g;
+    }
+    const n=Object.values(give).filter(g=>g>0).length;
+    const buffers=Math.max(0,n-1)*buf;
+    if(buffers>rest+1e-9){ rest=buffers; continue; }               // буфер t_дем ішіне кіреді
+    res={give,buffers}; break;
+  }
+  const used=tasks.reduce((s,t)=>s+(res.give[t.i]||0),0);
+  const restTotal=T-used;
+  const F=tasks.reduce((s,t)=>s+t.k*(res.give[t.i]||0),0);
+  const study=tasks.filter(t=>t.st).reduce((s,t)=>s+(res.give[t.i]||0),0);
+  const noise=tasks.filter(t=>t.k===1).reduce((s,t)=>s+(res.give[t.i]||0),0);
+  const byK={4:0,3:0,2:0,1:0}; tasks.forEach(t=>byK[t.k]+=res.give[t.i]||0);
+  return {T,restMin,noiseCap,tasks,order,give:res.give,buffers:res.buffers,used,restTotal,F,study,noise,byK};
+}
+/* Әдеттегі тәртіп: тізім реті, басымдық та, шектеу де, 1,5 түзету де жоқ */
+function naive(T){
+  let remaining=T; const give={}; const byK={4:0,3:0,2:0,1:0}; let F=0, study=0, noise=0;
+  S.tasks.forEach((t,i)=>{const g=Math.max(0,Math.min(num(t.min),remaining)); give[i]=g; remaining-=g; byK[t.k]+=g; F+=t.k*g; if(t.st)study+=g; if(t.k==1)noise+=g;});
+  return {give,byK,F,used:T-remaining,restTotal:remaining,study,noise};
+}
+
+function bar(byK,rest,T){
+  if(T<=0) return '<div class="bar"></div>';
+  const seg=(v,c,l)=>v>0?`<div style="width:${v/T*100}%;background:${c}" title="${l}: ${fmt(v)}">${v/T>.07?fmt(v):""}</div>`:"";
+  return `<div class="bar">${seg(byK[4],COL[4],"k=4")}${seg(byK[3],COL[3],"k=3")}${seg(byK[2],COL[2],"k=2")}${seg(byK[1],COL[1],"k=1")}${seg(rest,COL[0],"демалыс")}</div>`;
+}
+
+function render(){
+  save();
+  const A=algorithm(), T=A.T; $("tfree").textContent=T>0?`${T} мин (${fmt(T)})`:"0 — уақыт жоқ";
+  const N=naive(T);
+  // 2-қадам: шектеулер
+  const tmin=num(S.tmin);
+  const c=[
+    {t:"Σ t<sub>i</sub> ≤ T<sub>бос</sub>", v:`${A.used} ≤ ${T} мин`, ok:A.used<=T, d:"Уақыт қорының шегі"},
+    {t:"t<sub>дем</sub> ≥ 0,2·T<sub>бос</sub>", v:`${Math.round(A.restTotal)} ≥ ${Math.round(A.restMin)} мин`, ok:A.restTotal>=A.restMin-0.5, d:"Міндетті демалыс пен буфер"},
+    {t:"t<sub>оқу</sub> ≥ t<sub>min</sub>", v:`${A.study} ≥ ${tmin} мин`, ok:A.study>=tmin, d:"Академиялық минимум"},
+    {t:"t<sub>шу</sub> ≤ 0,15·T<sub>бос</sub>", v:`${A.noise} ≤ ${Math.floor(A.noiseCap)} мин`, ok:A.noise<=A.noiseCap+0.5, d:"Цифрлық шудың лимиті"}];
+  $("checks").innerHTML=c.map(x=>`<div class="chk ${x.ok?"ok":"bad"}"><span class="s">${x.ok?"✓ орындалды":"✗ орындалмады"}</span><div class="t">${x.t}</div><div class="v">${x.d}: ${x.v}</div></div>`).join("");
+
+  const avgA=A.used?A.F/A.used:0, avgN=N.used?N.F/N.used:0;
+  const useA=T?(A.byK[4]+A.byK[3])/T*100:0, useN=T?(N.byK[4]+N.byK[3])/T*100:0;
+  const nzA=T?A.noise/T*100:0, nzN=T?N.noise/T*100:0;
+  const rA=T?A.restTotal/T*100:0, rN=T?N.restTotal/T*100:0;
+  $("kpis").innerHTML=`
+    <div class="kpi"><div class="v">${A.F}</div><div class="l">F пайдалылық (алгоритм)<br>(әдеттегі: ${N.F})</div></div>
+    <div class="kpi g"><div class="v">${avgA.toFixed(2)}</div><div class="l">орташа басымдық F/Σt<br>(әдеттегі: ${avgN.toFixed(2)})</div></div>
+    <div class="kpi g"><div class="v">${useA.toFixed(0)}%</div><div class="l">пайдалы уақыт (k ≥ 3)<br>(әдеттегі: ${useN.toFixed(0)}%)</div></div>
+    <div class="kpi o"><div class="v">${nzA.toFixed(0)}%</div><div class="l">цифрлық шу<br>(әдеттегі: ${nzN.toFixed(0)}%)</div></div>`;
+  $("bars").innerHTML=`
+    <div class="cmp-row"><div class="nm">Әдеттегі тәртіп<small>тізім ретімен, шектеусіз</small></div>${bar(N.byK,N.restTotal,T)}</div>
+    <div class="cmp-row"><div class="nm">Алгоритм<small>k бойынша + шектеулер</small></div>${bar(A.byK,A.restTotal,T)}</div>`;
+  const row=(l,a,n,better)=>{const cls=better===null?"":(better?"better":"worse");return `<tr><td>${l}</td><td class="c">${n}</td><td class="c ${cls}">${a}</td></tr>`};
+  $("ctable").innerHTML=`<tr><th>Көрсеткіш</th><th class="c">Әдеттегі тәртіп</th><th class="c">Алгоритм</th></tr>`+
+    row("Маңызды істер (k = 4)",fmt(A.byK[4]),fmt(N.byK[4]),A.byK[4]>=N.byK[4])+
+    row("Даму (k = 3)",fmt(A.byK[3]),fmt(N.byK[3]),A.byK[3]>=N.byK[3])+
+    row("Цифрлық шу (k = 1)",fmt(A.noise),fmt(N.noise),A.noise<=N.noise)+
+    row("Демалыс пен буфер",fmt(A.restTotal),fmt(N.restTotal),A.restTotal>=N.restTotal)+
+    row("Оқуға кеткен уақыт",fmt(A.study),fmt(N.study),A.study>=N.study);
+  // ескертулер
+  let w=[];
+  if(T<=0) w.push("T<sub>бос</sub> нөлге тең: ұйқы, мектеп пен тамақ уақытын тексеріңіз.");
+  if(A.study<tmin) w.push(`Оқуға ${A.study} мин қана бөлінді — академиялық минимумға (${tmin} мин) жету үшін k = 4 оқу істерінің уақытын тексеріңіз немесе басқа істі азайтыңыз.`);
+  const lost=A.tasks.filter(t=>(A.give[t.i]||0)<t.need&&t.k>=3);
+  if(lost.length) w.push("Уақыт жетпеді: "+lost.map(t=>"«"+esc(t.name)+"»").join(", ")+". Бұл — «бәріне үлгеру мүмкін емес, бірақ ең маңыздысына уақыт жетеді» деген модельдің қорытындысы.");
+  $("warns").innerHTML=w.map(x=>`<div class="warn">${x}</div>`).join("");
+
+  // 4: бөлу кестесі
+  $("alloc").innerHTML=`<tr><th>Кезек</th><th>Іс-әрекет</th><th class="c">k</th><th class="c">Қажет</th><th class="c">Бөлінді</th><th class="c">k·t</th><th>Күйі</th></tr>`+
+    A.order.map((t,j)=>{const g=A.give[t.i]||0; const st=g>=t.need?'<span class="status st-full">толық</span>':g>0?'<span class="status st-part">ішінара</span>':'<span class="status st-none">сыймады</span>';
+      return `<tr><td class="c">${j+1}</td><td><i class="kdot" style="background:${COL[t.k]}"></i>${esc(t.name)}${t.cx?' <span class="pill" style="background:#fff3dc;color:#9a6a00">×1,5</span>':""}</td><td class="c">${t.k}</td><td class="c">${t.need}</td><td class="c"><b>${g}</b></td><td class="c">${t.k*g}</td><td>${st}</td></tr>`}).join("")+
+    `<tr><td></td><td><b>Барлығы</b></td><td></td><td></td><td class="c"><b>${A.used}</b></td><td class="c"><b>F = ${A.F}</b></td><td></td></tr>`;
+
+  // кесте
+  const [hh,mm]=(S.start||"15:00").split(":").map(Number); const base=(num(hh,15)*60+num(mm,0));
+  const items=A.order.filter(t=>(A.give[t.i]||0)>0);
+  const freeRest=Math.max(0,Math.round(A.restTotal-A.buffers));
+  let seq=[]; let restPlaced=false;
+  items.forEach((t,j)=>{ if(!restPlaced && t.k<4 && freeRest>0){seq.push({rest:true}); restPlaced=true;} seq.push(t); });
+  if(!restPlaced && freeRest>0) seq.push({rest:true});
+  let cur=0, html="", taskCount=0;
+  seq.forEach((x,j)=>{
+    if(x.rest){ html+=`<div class="slot" style="background:#e3f3f2"><span class="tm">${clock(base,cur)}–${clock(base,cur+freeRest)}</span><span>🌿 Белсенді демалыс: серуен, жаттығу, үзіліс</span><span class="du">${freeRest} мин</span></div>`; cur+=freeRest; return; }
+    const g=A.give[x.i];
+    if(taskCount>0 && num(S.buf)>0){ html+=`<div class="slot buf"><span>${clock(base,cur)}</span><span>· буфер ${num(S.buf)} мин</span><span></span></div>`; cur+=num(S.buf); }
+    html+=`<div class="slot" style="background:${x.k==4?"#fbe9e7":x.k==3?"#e7f4ec":x.k==2?"#fdf4dc":"#eef1f4"};border-left:6px solid ${COL[x.k]}"><span class="tm">${clock(base,cur)}–${clock(base,cur+g)}</span><span>${esc(x.name)}</span><span class="du">${g} мин</span></div>`;
+    cur+=g; taskCount++;
+  });
+  $("sched").innerHTML=html||'<p class="note">Істер жоқ.</p>';
+
+  // 5-қадам
+  $("abody").innerHTML=items.map(t=>{const g=A.give[t.i]; const a=S.actual&&S.actual[t.i]!=null?S.actual[t.i]:"";
+    let dev="", sug="";
+    if(a!==""&&num(a)>0){const d=(num(a)-g)/g*100; dev=`<span class="pill" style="background:${Math.abs(d)<=10?"#e3f4ea":d>0?"#fdecea":"#e6f2f2"};color:${Math.abs(d)<=10?"#1f7a45":d>0?"#b2372d":"#0f7c7a"}">${d>0?"+":""}${d.toFixed(0)}%</span>`;
+      const nb=Math.max(5,Math.round(num(a)/(t.cx?1.5:1)/5)*5); sug=Math.abs(d)<=10?"өзгеріссіз":`бастапқы бағаны ${nb} мин ету`;}
+    return `<tr><td>${esc(t.name)}</td><td class="c">${g}</td><td class="c"><input type="number" min="0" step="5" value="${a}" data-act="${t.i}"></td><td class="c">${dev}</td><td>${sug}</td></tr>`}).join("");
+}
+
+document.addEventListener("input",e=>{
+  const el=e.target;
+  if(["sleep","school","meals","tmin","buf"].includes(el.id)){S[el.id]=num(el.value);render();return;}
+  if(el.id==="start"){S.start=el.value;render();return;}
+  if(el.dataset.act!==undefined){S.actual=S.actual||{};S.actual[el.dataset.act]=el.value===""?null:num(el.value);renderAdaptOnly();return;}
+  if(el.dataset.f){const t=S.tasks[+el.dataset.i]; const f=el.dataset.f;
+    if(f==="name")t.name=el.value; else if(f==="k"){t.k=+el.value; el.style.borderLeft="6px solid "+COL[t.k];} else if(f==="min")t.min=num(el.value); else t[f]=el.checked;
+    if(f!=="name") render(); else save();}
+});
+document.addEventListener("change",e=>{ if(e.target.dataset.f==="name") render(); if(e.target.dataset.act!==undefined) render(); });
+function renderAdaptOnly(){ save(); clearTimeout(window._t); window._t=setTimeout(()=>{const f=document.activeElement&&document.activeElement.dataset.act; render(); if(f!==undefined){const x=document.querySelector(`[data-act="${f}"]`); if(x){x.focus(); const v=x.value; x.value=""; x.value=v;}}},500); }
+document.addEventListener("click",e=>{
+  if(e.target.dataset.del!==undefined){S.tasks.splice(+e.target.dataset.del,1);S.actual={};renderInputs();render();}
+});
+$("add").onclick=()=>{S.tasks.push({name:"Жаңа іс",k:3,min:30,cx:false,st:false});renderInputs();render();const ins=document.querySelectorAll('#tbody input[type=text]');ins[ins.length-1].select();};
+$("example").onclick=()=>{S=JSON.parse(JSON.stringify(EXAMPLE));renderInputs();render();};
+$("clear").onclick=()=>{S.tasks=[];S.actual={};renderInputs();render();};
+$("applyAdapt").onclick=()=>{
+  if(!S.actual) return; let n=0;
+  S.tasks.forEach((t,i)=>{const a=S.actual[i]; if(a!=null&&num(a)>0){t.min=Math.max(5,Math.round(num(a)/(t.cx?1.5:1)/5)*5); n++;}});
+  S.actual={}; renderInputs(); render();
+  alertBox(n?`${n} істің уақыты нақты деректер бойынша түзетілді. Алгоритм келесі күнге жаңа кесте құрды.`:"Алдымен «Нақты» бағанына минуттарды жазыңыз.");
+};
+function alertBox(msg){const d=document.createElement("div");d.textContent=msg;Object.assign(d.style,{position:"fixed",bottom:"24px",left:"50%",transform:"translateX(-50%)",background:"#17324d",color:"#fff",padding:"12px 20px",borderRadius:"10px",fontSize:"15px",zIndex:9,boxShadow:"0 4px 14px rgba(0,0,0,.2)"});document.body.appendChild(d);setTimeout(()=>d.remove(),3500);}
+load(); if(!S.actual) S.actual={}; renderInputs(); render();
+</script>
+</body>
+</html>
